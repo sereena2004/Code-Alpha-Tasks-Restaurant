@@ -1,0 +1,181 @@
+import java.util.ArrayList; // Import ArrayList class
+import java.util.Scanner; // Import Scanner class for user input
+
+class Room {
+    String number; // Room number
+    String category; // Room category (single, double, suite)
+    boolean isAvailable; // Availability status of the room
+    double price; // Price of the room per night
+
+    Room(String number, String category, double price) {
+        this.number = number; // Initialize room number
+        this.category = category; // Initialize room category
+        this.isAvailable = true; // Initialize room availability to true
+        this.price = price; // Initialize room price
+    }
+}
+
+class Booking {
+    String name; // Name of the person booking the room
+    String email; // Email of the person booking the room
+    Room room; // The room being booked
+    int nights; // Number of nights the room is booked for
+    double totalCost; // Total cost of the booking
+
+    Booking(String name, String email, Room room, int nights, double totalCost) {
+        this.name = name; // Initialize name
+        this.email = email; // Initialize email
+        this.room = room; // Initialize room
+        this.nights = nights; // Initialize number of nights
+        this.totalCost = totalCost; // Initialize total cost
+    }
+}
+
+public class HotelReservationSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // Create Scanner object for reading user input
+        ArrayList<Room> rooms = new ArrayList<>(); // Create ArrayList to store room objects
+        ArrayList<Booking> bookings = new ArrayList<>(); // Create ArrayList to store booking objects
+
+        // Adding some rooms
+        rooms.add(new Room("101", "single", 1000)); // Add single room 101 with price 1000
+        rooms.add(new Room("102", "double", 1800)); // Add double room 102 with price 1800
+        rooms.add(new Room("201", "suite", 2000)); // Add suite room 201 with price 2000
+        rooms.add(new Room("202", "double", 1800)); // Add double room 202 with price 1800
+        rooms.add(new Room("103", "single", 1000)); // Add single room 103 with price 1000
+        rooms.add(new Room("104", "double", 1800)); // Add double room 104 with price 1800
+        rooms.add(new Room("210", "suite", 2000)); // Add suite room 210 with price 2000
+        rooms.add(new Room("204", "double", 1800)); // Add double room 204 with price 1800
+        System.out.println("Welcome to the Hotel Reservation System!"); // Welcome message
+
+        while (true) { // Infinite loop for making reservations
+            System.out.println("\nPlease enter your details and preferences to make a reservation.");
+
+            // Input: Check-in date
+            System.out.print("Enter check-in date (yyyy-mm-dd): ");
+            String checkinDate = scanner.nextLine(); // Read check-in date
+
+            // Input: Check-out date
+            System.out.print("Enter check-out date (yyyy-mm-dd): ");
+            String checkoutDate = scanner.nextLine(); // Read check-out date
+
+            // Calculate the number of nights
+            int nights = calculateNights(checkinDate, checkoutDate);
+
+            // Input: Room category
+            System.out.print("Enter room category (single/double/suite): ");
+            String category = scanner.nextLine().toLowerCase(); // Read room category and convert to lowercase
+
+            // Search for available rooms
+            Room availableRoom = null; // Initialize available room to null
+            for (Room room : rooms) { // Iterate through rooms
+                if (room.category.equals(category) && room.isAvailable) { // Check if room category matches and is available
+                    availableRoom = room; // Set available room
+                    break; // Exit loop if room found
+                }
+            }
+
+            if (availableRoom != null) { // If an available room is found
+                System.out.println("Room available: " + availableRoom.number + " (" + availableRoom.category + ")");
+
+                // Input: Name
+                System.out.print("Enter your name: ");
+                String name = scanner.nextLine(); // Read user's name
+
+                // Input: Email
+                System.out.print("Enter your email: ");
+                String email = scanner.nextLine(); // Read user's email
+
+                // Calculate total cost
+                double totalCost = nights * availableRoom.price;
+
+                // Reserve the room
+                Booking booking = new Booking(name, email, availableRoom, nights, totalCost); // Create booking object
+                bookings.add(booking); // Add booking to bookings list
+                availableRoom.isAvailable = false; // Mark room as reserved
+
+                System.out.println("Reservation successful!"); // Success message
+                System.out.println("Booking Details:");
+                System.out.println("Name: " + booking.name); // Display booking name
+                System.out.println("Email: " + booking.email); // Display booking email
+                System.out.println("Room: " + booking.room.number + " (" + booking.room.category + ")"); // Display room details
+                System.out.println("Number of nights: " + booking.nights); // Display number of nights
+                System.out.println("Total cost: $" + booking.totalCost); // Display total cost
+            } else {
+                System.out.println("No available rooms found for the category: " + category); // No available rooms message
+            }
+
+            // Ask if user wants to make another reservation
+            System.out.print("Do you want to make another reservation? (yes/no): ");
+            String response = scanner.nextLine().toLowerCase(); // Read user response and convert to lowercase
+            if (!response.equals("yes")) { // Check if response is not 'yes'
+                break; // Exit loop if response is not 'yes'
+            }
+        }
+
+        System.out.println("Thank you for using the Hotel Reservation System!"); // Thank you message
+        scanner.close(); // Close scanner to free up resources
+    }
+
+    // Helper method to calculate number of nights between check-in and check-out dates
+    private static int calculateNights(String checkinDate, String checkoutDate) {
+        // Split dates into year, month, and day
+        String[] checkinParts = checkinDate.split("-");
+        String[] checkoutParts = checkoutDate.split("-");
+
+        // Convert year, month, and day to integers
+        int checkinYear = Integer.parseInt(checkinParts[0]);
+        int checkinMonth = Integer.parseInt(checkinParts[1]);
+        int checkinDay = Integer.parseInt(checkinParts[2]);
+
+        int checkoutYear = Integer.parseInt(checkoutParts[0]);
+        int checkoutMonth = Integer.parseInt(checkoutParts[1]);
+        int checkoutDay = Integer.parseInt(checkoutParts[2]);
+
+        // Calculate total days from start of the year for both check-in and check-out dates
+        int checkinTotalDays = checkinYear * 365 + checkinMonth * 30 + checkinDay;
+        int checkoutTotalDays = checkoutYear * 365 + checkoutMonth * 30 + checkoutDay;
+
+        // Calculate difference in total days to get number of nights
+        return checkoutTotalDays - checkinTotalDays;
+    }
+}
+
+
+java -cp /tmp/z4aG7w9TmK/HotelReservationSystem
+Welcome to the Hotel Reservation System!
+
+Please enter your details and preferences to make a reservation.
+Enter check-in date (yyyy-mm-dd): 2024-07-10
+Enter check-out date (yyyy-mm-dd): 2024-07-11
+Enter room category (single/double/suite): single
+Room available: 101 (single)
+Enter your name: swathi
+Enter your email: swathi@gmail.com
+Reservation successful!
+Booking Details:
+Name: swathi
+Email: swathi@gmail.com
+Room: 101 (single)
+Number of nights: 1
+Total cost: $1000.0
+Do you want to make another reservation? (yes/no): yes
+
+Please enter your details and preferences to make a reservation.
+Enter check-in date (yyyy-mm-dd): 2024-07-10
+Enter check-out date (yyyy-mm-dd): 2024-07-15
+Enter room category (single/double/suite): double
+Room available: 102 (double)
+Enter your name: dinesh
+Enter your email: dinesh@gmail.com
+Reservation successful!
+Booking Details:
+Name: dinesh
+Email: dinesh@gmail.com
+Room: 102 (double)
+Number of nights: 5
+Total cost: $9000.0
+Do you want to make another reservation? (yes/no): no
+Thank you for using the Hotel Reservation System!
+
+=== Code Execution Successful ===
